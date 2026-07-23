@@ -9,6 +9,27 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
   previousDoc,
   req: { payload, context },
 }) => {
+  // #region agent log
+  fetch('http://127.0.0.1:7853/ingest/115c7133-2281-4207-b019-5c4451add4c3', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
+    body: JSON.stringify({
+      sessionId: '874f00',
+      runId: 'pre-fix',
+      hypothesisId: 'D',
+      location: 'Pages/hooks/revalidatePage.ts',
+      message: 'revalidatePage afterChange',
+      data: {
+        status: doc?._status,
+        slug: doc?.slug,
+        disableRevalidate: Boolean(context.disableRevalidate),
+        willRevalidatePublished: !context.disableRevalidate && doc?._status === 'published',
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {})
+  // #endregion
+
   if (!context.disableRevalidate) {
     if (doc._status === 'published') {
       const path = doc.slug === 'home' ? '/' : `/${doc.slug}`

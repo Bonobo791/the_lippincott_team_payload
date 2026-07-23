@@ -60,6 +60,31 @@ export default async function Page({ params: paramsPromise }: Args) {
     page = homeStatic
   }
 
+  // #region agent log
+  fetch('http://127.0.0.1:7853/ingest/115c7133-2281-4207-b019-5c4451add4c3', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
+    body: JSON.stringify({
+      sessionId: '874f00',
+      runId: 'pre-fix',
+      hypothesisId: 'A-C',
+      location: 'app/(frontend)/[slug]/page.tsx:Page',
+      message: 'Page render',
+      data: {
+        draft,
+        decodedSlug,
+        url,
+        hasPage: Boolean(page),
+        pageUpdatedAt: page && 'updatedAt' in page ? page.updatedAt : null,
+        layoutCount: Array.isArray(page?.layout) ? page.layout.length : null,
+        willMountLivePreviewListener: draft,
+        envServerURL: process.env.NEXT_PUBLIC_SERVER_URL || null,
+      },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {})
+  // #endregion
+
   if (!page) {
     return <PayloadRedirects url={url} />
   }
