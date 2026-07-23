@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { type CollectionConfig, slugField } from 'payload'
 
 import {
   BlocksFeature,
@@ -216,11 +216,7 @@ export const Posts: CollectionConfig = {
         },
       ],
     },
-    {
-      name: 'slug',
-      type: 'slug',
-      useAsSlug: 'title',
-    },
+    slugField({ useAsSlug: 'title' }),
   ],
   hooks: {
     afterChange: [revalidatePost],

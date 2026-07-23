@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { type CollectionConfig, slugField } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
@@ -20,11 +20,6 @@ export const Categories: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    {
-      name: 'slug',
-      type: 'slug',
-      useAsSlug: 'title',
-      admin: { position: undefined },
-    },
+    slugField({ useAsSlug: 'title' }),
   ],
 }
