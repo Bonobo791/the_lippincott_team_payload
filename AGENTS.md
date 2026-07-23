@@ -1,4 +1,11 @@
+---
+description: 
+alwaysApply: true
+---
+
 # Repository Guidelines
+
+- Neon is managed by Vercel
 
 ## Project Structure & Module Organization
 
