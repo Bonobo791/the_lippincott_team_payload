@@ -2,11 +2,20 @@ import { type CollectionConfig, slugField } from 'payload'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
-import { Archive } from '../../blocks/ArchiveBlock/config'
-import { CallToAction } from '../../blocks/CallToAction/config'
-import { Content } from '../../blocks/Content/config'
+import { AgentGrid } from '../../blocks/AgentGrid/config'
+import { AwardsStats } from '../../blocks/AwardsStats/config'
+import { CommunityGrid } from '../../blocks/CommunityGrid/config'
+import { CtaBand } from '../../blocks/CtaBand/config'
+import { Faq } from '../../blocks/Faq/config'
+import { FeatureCards } from '../../blocks/FeatureCards/config'
 import { FormBlock } from '../../blocks/Form/config'
-import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Hero } from '../../blocks/Hero/config'
+import { InfoGrid } from '../../blocks/InfoGrid/config'
+import { ReviewsCarousel } from '../../blocks/ReviewsCarousel/config'
+import { ServingSplit } from '../../blocks/ServingSplit/config'
+import { TrackRecord } from '../../blocks/TrackRecord/config'
+import { TrustBar } from '../../blocks/TrustBar/config'
+import { VideoTestimonial } from '../../blocks/VideoTestimonial/config'
 import { hero } from '@/heros/config'
 import { ensureSlug } from '../../hooks/ensureSlug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -75,7 +84,22 @@ export const Pages: CollectionConfig = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                Hero,
+                TrustBar,
+                VideoTestimonial,
+                ReviewsCarousel,
+                AwardsStats,
+                TrackRecord,
+                CommunityGrid,
+                ServingSplit,
+                FeatureCards,
+                Faq,
+                InfoGrid,
+                CtaBand,
+                AgentGrid,
+                FormBlock,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,
