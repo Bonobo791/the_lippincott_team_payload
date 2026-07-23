@@ -72,6 +72,9 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    agents: Agent;
+    communities: Community;
+    testimonials: Testimonial;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +97,9 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    agents: AgentsSelect<false> | AgentsSelect<true>;
+    communities: CommunitiesSelect<false> | CommunitiesSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -112,10 +118,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -201,7 +209,22 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | HeroBlock
+    | TrustBarBlock
+    | VideoTestimonialBlock
+    | ReviewsCarouselBlock
+    | AwardsStatsBlock
+    | TrackRecordBlock
+    | CommunityGridBlock
+    | ServingSplitBlock
+    | FeatureCardsBlock
+    | FaqBlock
+    | InfoGridBlock
+    | CtaBandBlock
+    | AgentGridBlock
+    | FormBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
@@ -441,145 +464,318 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock".
+ * via the `definition` "HeroBlock".
  */
-export interface CallToActionBlock {
-  richText?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  links?:
+export interface HeroBlock {
+  badge: string;
+  heading: string;
+  /**
+   * Optional MP4. Falls back to the background image.
+   */
+  backgroundVideo?: (number | null) | Media;
+  backgroundImage: number | Media;
+  cta: {
+    label: string;
+    url: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustBarBlock".
+ */
+export interface TrustBarBlock {
+  headingLight: string;
+  headingBold: string;
+  caption?: string | null;
+  ratings?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
+        source: 'google' | 'har';
+        score: string;
+        url: string;
         id?: string | null;
       }[]
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'cta';
+  blockType: 'trustBar';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock".
+ * via the `definition` "VideoTestimonialBlock".
  */
-export interface ContentBlock {
-  columns?:
+export interface VideoTestimonialBlock {
+  headingLight: string;
+  headingBold: string;
+  /**
+   * MP4 testimonial video. The poster image is used until playback.
+   */
+  video?: (number | null) | Media;
+  poster: number | Media;
+  cta: {
+    label: string;
+    url: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'videoTestimonial';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsCarouselBlock".
+ */
+export interface ReviewsCarouselBlock {
+  heading: string;
+  cta: {
+    label: string;
+    url: string;
+  };
+  testimonials: (number | Testimonial)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reviewsCarousel';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  quote: string;
+  /**
+   * Displayed as "Feedback on {location}"
+   */
+  location: string;
+  source?: ('google' | 'har' | 'zillow' | 'other') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AwardsStatsBlock".
+ */
+export interface AwardsStatsBlock {
+  heading: string;
+  leadBold?: string | null;
+  leadLinkLabel?: string | null;
+  leadLinkUrl?: string | null;
+  leadTail?: string | null;
+  intro?: string | null;
+  awards?:
     | {
-        size?: ('oneThird' | 'half' | 'twoThirds' | 'full') | null;
-        richText?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        enableLink?: boolean | null;
-        link?: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-          /**
-           * Choose how the link should be rendered.
-           */
-          appearance?: ('default' | 'outline') | null;
-        };
+        name: string;
+        linkLabel?: string | null;
+        linkUrl?: string | null;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  ctaLabel?: string | null;
+  ctaUrl?: string | null;
+  stats?:
+    | {
+        icon: 'home' | 'trophy' | 'star';
+        value: string;
+        label: string;
         id?: string | null;
       }[]
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'content';
+  blockType: 'awardsStats';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock".
+ * via the `definition` "TrackRecordBlock".
  */
-export interface MediaBlock {
-  media: number | Media;
+export interface TrackRecordBlock {
+  headingLight: string;
+  headingBold: string;
+  body: string;
+  cta: {
+    label: string;
+    url: string;
+  };
+  backgroundImage: number | Media;
+  video?: (number | null) | Media;
+  poster: number | Media;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'mediaBlock';
+  blockType: 'trackRecord';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock".
+ * via the `definition` "CommunityGridBlock".
  */
-export interface ArchiveBlock {
-  introContent?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  populateBy?: ('collection' | 'selection') | null;
-  relationTo?: 'posts' | null;
-  categories?: (number | Category)[] | null;
-  limit?: number | null;
-  selectedDocs?:
+export interface CommunityGridBlock {
+  headingLight: string;
+  headingBold: string;
+  subheading?: string | null;
+  cardLabel?: string | null;
+  communities: (number | Community)[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'communityGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "communities".
+ */
+export interface Community {
+  id: number;
+  name: string;
+  slug: string;
+  image: number | Media;
+  description?: string | null;
+  /**
+   * External IDX/listings URL for this community (optional)
+   */
+  listingsUrl?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServingSplitBlock".
+ */
+export interface ServingSplitBlock {
+  badge: string;
+  heading: string;
+  body: string;
+  quickLinks?:
     | {
-        relationTo: 'posts';
-        value: number | Post;
+        icon: 'buy' | 'sell' | 'relocate';
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional stat cards shown below the body (used on the About page)
+   */
+  stats?:
+    | {
+        value: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  image: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servingSplit';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureCardsBlock".
+ */
+export interface FeatureCardsBlock {
+  cards?:
+    | {
+        icon: 'search' | 'chart' | 'bell';
+        title: string;
+        body: string;
+        id?: string | null;
       }[]
     | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'archive';
+  blockType: 'featureCards';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock".
+ */
+export interface FaqBlock {
+  heading: string;
+  intro?: string | null;
+  items?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoGridBlock".
+ */
+export interface InfoGridBlock {
+  items?:
+    | {
+        title: string;
+        body: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBandBlock".
+ */
+export interface CtaBandBlock {
+  headingLight: string;
+  headingBold: string;
+  subheading?: string | null;
+  primaryCta: {
+    label: string;
+    url: string;
+  };
+  secondaryCta: {
+    label: string;
+    url: string;
+  };
+  /**
+   * Show phone and email from Site Settings below the buttons
+   */
+  showContact?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'ctaBand';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AgentGridBlock".
+ */
+export interface AgentGridBlock {
+  eyebrow?: string | null;
+  heading: string;
+  subheading?: string | null;
+  /**
+   * Leave empty to show all agents (sorted by their Order field)
+   */
+  agents?: (number | Agent)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'agentGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents".
+ */
+export interface Agent {
+  id: number;
+  name: string;
+  role: string;
+  phone?: string | null;
+  email?: string | null;
+  photo: number | Media;
+  bio?: string | null;
+  /**
+   * Lower numbers appear first
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -983,6 +1179,18 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'agents';
+        value: number | Agent;
+      } | null)
+    | ({
+        relationTo: 'communities';
+        value: number | Community;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1075,10 +1283,19 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
-        cta?: T | CallToActionBlockSelect<T>;
-        content?: T | ContentBlockSelect<T>;
-        mediaBlock?: T | MediaBlockSelect<T>;
-        archive?: T | ArchiveBlockSelect<T>;
+        hero?: T | HeroBlockSelect<T>;
+        trustBar?: T | TrustBarBlockSelect<T>;
+        videoTestimonial?: T | VideoTestimonialBlockSelect<T>;
+        reviewsCarousel?: T | ReviewsCarouselBlockSelect<T>;
+        awardsStats?: T | AwardsStatsBlockSelect<T>;
+        trackRecord?: T | TrackRecordBlockSelect<T>;
+        communityGrid?: T | CommunityGridBlockSelect<T>;
+        servingSplit?: T | ServingSplitBlockSelect<T>;
+        featureCards?: T | FeatureCardsBlockSelect<T>;
+        faq?: T | FaqBlockSelect<T>;
+        infoGrid?: T | InfoGridBlockSelect<T>;
+        ctaBand?: T | CtaBandBlockSelect<T>;
+        agentGrid?: T | AgentGridBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
       };
   meta?:
@@ -1097,23 +1314,36 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToActionBlock_select".
+ * via the `definition` "HeroBlock_select".
  */
-export interface CallToActionBlockSelect<T extends boolean = true> {
-  richText?: T;
-  links?:
+export interface HeroBlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  backgroundVideo?: T;
+  backgroundImage?: T;
+  cta?:
     | T
     | {
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
+        label?: T;
+        url?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TrustBarBlock_select".
+ */
+export interface TrustBarBlockSelect<T extends boolean = true> {
+  headingLight?: T;
+  headingBold?: T;
+  caption?: T;
+  ratings?:
+    | T
+    | {
+        source?: T;
+        score?: T;
+        url?: T;
         id?: T;
       };
   id?: T;
@@ -1121,25 +1351,66 @@ export interface CallToActionBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock_select".
+ * via the `definition` "VideoTestimonialBlock_select".
  */
-export interface ContentBlockSelect<T extends boolean = true> {
-  columns?:
+export interface VideoTestimonialBlockSelect<T extends boolean = true> {
+  headingLight?: T;
+  headingBold?: T;
+  video?: T;
+  poster?: T;
+  cta?:
     | T
     | {
-        size?: T;
-        richText?: T;
-        enableLink?: T;
-        link?:
-          | T
-          | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
-              label?: T;
-              appearance?: T;
-            };
+        label?: T;
+        url?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReviewsCarouselBlock_select".
+ */
+export interface ReviewsCarouselBlockSelect<T extends boolean = true> {
+  heading?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  testimonials?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AwardsStatsBlock_select".
+ */
+export interface AwardsStatsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  leadBold?: T;
+  leadLinkLabel?: T;
+  leadLinkUrl?: T;
+  leadTail?: T;
+  intro?: T;
+  awards?:
+    | T
+    | {
+        name?: T;
+        linkLabel?: T;
+        linkUrl?: T;
+        description?: T;
+        id?: T;
+      };
+  ctaLabel?: T;
+  ctaUrl?: T;
+  stats?:
+    | T
+    | {
+        icon?: T;
+        value?: T;
+        label?: T;
         id?: T;
       };
   id?: T;
@@ -1147,24 +1418,145 @@ export interface ContentBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MediaBlock_select".
+ * via the `definition` "TrackRecordBlock_select".
  */
-export interface MediaBlockSelect<T extends boolean = true> {
-  media?: T;
+export interface TrackRecordBlockSelect<T extends boolean = true> {
+  headingLight?: T;
+  headingBold?: T;
+  body?: T;
+  cta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  backgroundImage?: T;
+  video?: T;
+  poster?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ArchiveBlock_select".
+ * via the `definition` "CommunityGridBlock_select".
  */
-export interface ArchiveBlockSelect<T extends boolean = true> {
-  introContent?: T;
-  populateBy?: T;
-  relationTo?: T;
-  categories?: T;
-  limit?: T;
-  selectedDocs?: T;
+export interface CommunityGridBlockSelect<T extends boolean = true> {
+  headingLight?: T;
+  headingBold?: T;
+  subheading?: T;
+  cardLabel?: T;
+  communities?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServingSplitBlock_select".
+ */
+export interface ServingSplitBlockSelect<T extends boolean = true> {
+  badge?: T;
+  heading?: T;
+  body?: T;
+  quickLinks?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  stats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        id?: T;
+      };
+  image?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeatureCardsBlock_select".
+ */
+export interface FeatureCardsBlockSelect<T extends boolean = true> {
+  cards?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqBlock_select".
+ */
+export interface FaqBlockSelect<T extends boolean = true> {
+  heading?: T;
+  intro?: T;
+  items?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoGridBlock_select".
+ */
+export interface InfoGridBlockSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        title?: T;
+        body?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBandBlock_select".
+ */
+export interface CtaBandBlockSelect<T extends boolean = true> {
+  headingLight?: T;
+  headingBold?: T;
+  subheading?: T;
+  primaryCta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  secondaryCta?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+      };
+  showContact?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AgentGridBlock_select".
+ */
+export interface AgentGridBlockSelect<T extends boolean = true> {
+  eyebrow?: T;
+  heading?: T;
+  subheading?: T;
+  agents?: T;
   id?: T;
   blockName?: T;
 }
@@ -1346,6 +1738,45 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "agents_select".
+ */
+export interface AgentsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  phone?: T;
+  email?: T;
+  photo?: T;
+  bio?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "communities_select".
+ */
+export interface CommunitiesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  image?: T;
+  description?: T;
+  listingsUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  quote?: T;
+  location?: T;
+  source?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1628,23 +2059,17 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Header {
   id: number;
-  navItems?:
+  nav?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
+        label: string;
+        url: string;
+        children?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1657,23 +2082,16 @@ export interface Header {
  */
 export interface Footer {
   id: number;
-  navItems?:
+  columns?:
     | {
-        link: {
-          type?: ('reference' | 'custom') | null;
-          newTab?: boolean | null;
-          reference?:
-            | ({
-                relationTo: 'pages';
-                value: number | Page;
-              } | null)
-            | ({
-                relationTo: 'posts';
-                value: number | Post;
-              } | null);
-          url?: string | null;
-          label: string;
-        };
+        heading: string;
+        links?:
+          | {
+              label: string;
+              url: string;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -1682,20 +2100,39 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName: string;
+  brokerage?: string | null;
+  phone: string;
+  /**
+   * tel: link, e.g. tel:7134941818
+   */
+  phoneHref: string;
+  email: string;
+  footerBlurb?: string | null;
+  logo?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
-  navItems?:
+  nav?:
     | T
     | {
-        link?:
+        label?: T;
+        url?: T;
+        children?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
               label?: T;
+              url?: T;
+              id?: T;
             };
         id?: T;
       };
@@ -1708,20 +2145,35 @@ export interface HeaderSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  navItems?:
+  columns?:
     | T
     | {
-        link?:
+        heading?: T;
+        links?:
           | T
           | {
-              type?: T;
-              newTab?: T;
-              reference?: T;
-              url?: T;
               label?: T;
+              url?: T;
+              id?: T;
             };
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  brokerage?: T;
+  phone?: T;
+  phoneHref?: T;
+  email?: T;
+  footerBlurb?: T;
+  logo?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1793,6 +2245,16 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -22,3 +22,8 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 .cursor
+.serena
+.codex
+.vscode
+.idea
+.tokensave
