@@ -16,7 +16,7 @@ export const LivePreviewListener: React.FC = () => {
       headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
       body: JSON.stringify({
         sessionId: '874f00',
-        runId: 'pre-fix',
+        runId: 'post-fix',
         hypothesisId: 'A-B',
         location: 'LivePreviewListener/index.tsx:mount',
         message: 'LivePreviewListener mounted',
@@ -39,7 +39,7 @@ export const LivePreviewListener: React.FC = () => {
         headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
         body: JSON.stringify({
           sessionId: '874f00',
-          runId: 'pre-fix',
+          runId: 'post-fix',
           hypothesisId: 'B-E',
           location: 'LivePreviewListener/index.tsx:message',
           message: 'postMessage received in preview iframe',
@@ -66,7 +66,7 @@ export const LivePreviewListener: React.FC = () => {
       headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
       body: JSON.stringify({
         sessionId: '874f00',
-        runId: 'pre-fix',
+        runId: 'post-fix',
         hypothesisId: 'C-E',
         location: 'LivePreviewListener/index.tsx:refresh',
         message: 'router.refresh invoked by Live Preview',

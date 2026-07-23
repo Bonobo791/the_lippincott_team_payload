@@ -15,11 +15,13 @@ export const revalidatePage: CollectionAfterChangeHook<Page> = ({
     headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
     body: JSON.stringify({
       sessionId: '874f00',
-      runId: 'pre-fix',
-      hypothesisId: 'D',
+      runId: 'post-fix',
+      hypothesisId: 'D-F',
       location: 'Pages/hooks/revalidatePage.ts',
       message: 'revalidatePage afterChange',
       data: {
+        id: doc?.id,
+        title: doc?.title,
         status: doc?._status,
         slug: doc?.slug,
         disableRevalidate: Boolean(context.disableRevalidate),

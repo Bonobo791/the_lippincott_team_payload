@@ -66,7 +66,7 @@ export default async function Page({ params: paramsPromise }: Args) {
     headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '874f00' },
     body: JSON.stringify({
       sessionId: '874f00',
-      runId: 'pre-fix',
+      runId: 'post-fix',
       hypothesisId: 'A-C',
       location: 'app/(frontend)/[slug]/page.tsx:Page',
       message: 'Page render',
