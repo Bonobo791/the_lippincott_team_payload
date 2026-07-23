@@ -4,13 +4,17 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+import { Agents } from './collections/Agents'
 import { Categories } from './collections/Categories'
+import { Communities } from './collections/Communities'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
+import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { SiteSettings } from './SiteSettings/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
@@ -70,18 +74,26 @@ export default buildConfig({
     Media,
     Categories,
     Users,
+    Agents,
+    Communities,
+    Testimonials,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   plugins: [
     ...plugins,
-    vercelBlobStorage({
-      collections: {
-        media: true,
-      },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-    }),
+    // Skip Blob storage when no token is set (local dev falls back to local disk)
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [
+          vercelBlobStorage({
+            collections: {
+              media: true,
+            },
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+          }),
+        ]
+      : []),
   ],
-  globals: [Header, Footer],
+  globals: [Header, Footer, SiteSettings],
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {
