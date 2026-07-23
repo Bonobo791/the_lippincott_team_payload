@@ -67,22 +67,12 @@ After you click the `Deploy` button above, you'll want to have standalone copy o
 
 1. First [clone the repo](#clone) if you have not done so already
 2. `cd my-project && cp .env.example .env.local` to create your untracked local configuration. Create a dedicated Neon `dev` branch from the baselined Production branch and set its connection string as `DATABASE_URL` in `.env.local`. Never use a Production- or Preview-scope connection string locally.
-3. The adapter uses `DATABASE_URL` first and falls back to Vercel's injected `POSTGRES_URL`; when both are set, `DATABASE_URL` wins.
+3. Set `BLOB_READ_WRITE_TOKEN` in `.env.local` to the Development value from Vercel Blob for local media uploads. The adapter uses `DATABASE_URL` first and falls back to Vercel's injected `POSTGRES_URL`; when both are set, `DATABASE_URL` wins.
 
 4. `pnpm install && pnpm dev` to install dependencies and start the dev server
 5. open `http://localhost:3000` to open the app in your browser
 
 That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
-
-#### Docker (Optional)
-
-If you prefer to use Docker for local development instead of a local Postgres instance, the provided docker-compose.yml file can be used.
-
-To do so, follow these steps:
-
-- Modify the `DATABASE_URL` in your `.env.local` file to `postgres://postgres@localhost:54320/<dbname>`
-- Modify the `docker-compose.yml` file's `POSTGRES_DB` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
 
 ## How it works
 
@@ -253,16 +243,6 @@ pnpm run ci
 The migration command prefers `DATABASE_URL_UNPOOLED`, then `POSTGRES_URL_NON_POOLING`, and finally `DATABASE_URL`. Verify which direct-connection variable Vercel injects with `vercel env ls` or in the Storage dashboard. Only the migration process uses the direct connection; the build retains its normal pooled connection.
 
 Fix schema issues forward. `migrate:down` is not part of the deployment workflow. For a previously push-managed database, follow [the Vercel/Neon migration runbook](./PAYLOAD_MIGRATION_RESEARCH.md) before deploying.
-
-### Docker
-
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
-
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
-
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
 
 ### Seed
 
