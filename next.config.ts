@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
   redirects,
   outputFileTracingIncludes: {
     '/*': [
-      './node_modules/.pnpm/sharp@*/node_modules/@img/sharp-libvips-linux-x64/lib/**/*',
+      './node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/node_modules/@img/sharp-libvips-linux-x64/lib/**/*',
     ],
   },
   turbopack: {
