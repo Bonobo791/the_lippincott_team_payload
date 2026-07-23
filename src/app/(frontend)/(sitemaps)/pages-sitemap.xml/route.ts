@@ -26,7 +26,7 @@ const getPagesSitemap = unstable_cache(
       select: {
         slug: true,
         updatedAt: true,
-      },
+      } as const,
     })
 
     const dateFallback = new Date().toISOString()
@@ -42,16 +42,12 @@ const getPagesSitemap = unstable_cache(
       },
     ]
 
-    const sitemap = results.docs
-      ? results.docs
-          .filter((page) => Boolean(page?.slug))
-          .map((page) => {
-            return {
-              loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
-              lastmod: page.updatedAt || dateFallback,
-            }
-          })
-      : []
+    const sitemap = (results.docs as Array<{ id: number; slug?: string | null; updatedAt: string }>)
+      .filter((page) => Boolean(page.slug))
+      .map((page) => ({
+        loc: page.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page.slug}`,
+        lastmod: page.updatedAt || dateFallback,
+      }))
 
     return [...defaultSitemap, ...sitemap]
   },

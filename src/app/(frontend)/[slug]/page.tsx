@@ -26,7 +26,7 @@ export async function generateStaticParams() {
     },
   })
 
-  const params = pages.docs
+  const params = (pages.docs as Array<{ id: number; slug?: string | null }>)
     ?.filter((doc) => {
       return doc.slug !== 'home'
     })

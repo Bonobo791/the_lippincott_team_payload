@@ -6,6 +6,7 @@ import React from 'react'
 import RichText from '@/components/RichText'
 
 import { CollectionArchive } from '@/components/CollectionArchive'
+import type { CardPostData } from '@/components/Card'
 
 export const ArchiveBlock: React.FC<
   ArchiveBlockProps & {
@@ -59,7 +60,7 @@ export const ArchiveBlock: React.FC<
           <RichText className="ms-0 max-w-[48rem]" data={introContent} enableGutter={false} />
         </div>
       )}
-      <CollectionArchive posts={posts} />
+      <CollectionArchive posts={posts as unknown as CardPostData[]} />
     </div>
   )
 }
