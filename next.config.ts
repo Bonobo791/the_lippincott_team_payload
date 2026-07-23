@@ -48,6 +48,11 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: true,
   redirects,
+  outputFileTracingIncludes: {
+    '/*': [
+      './node_modules/.pnpm/@img+sharp-libvips-linux-x64@*/node_modules/@img/sharp-libvips-linux-x64/lib/**/*',
+    ],
+  },
   turbopack: {
     root: path.resolve(dirname),
   },
