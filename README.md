@@ -66,12 +66,11 @@ After you click the `Deploy` button above, you'll want to have standalone copy o
 ### Development
 
 1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `POSTGRES_URL` and `BLOB_READ_WRITE_TOKEN` from your Vercel project to your `.env` if you want to use Vercel Blob and the Neon database that was created for you.
+2. `cd my-project && cp .env.example .env.local` to create your untracked local configuration. Create a dedicated Neon `dev` branch from the baselined Production branch and set its connection string as `DATABASE_URL` in `.env.local`. Never use a Production- or Preview-scope connection string locally.
+3. The adapter uses `DATABASE_URL` first and falls back to Vercel's injected `POSTGRES_URL`; when both are set, `DATABASE_URL` wins.
 
-   > _NOTE: If the connection string value includes `localhost` or `127.0.0.1`, the code will automatically use a normal postgres adapter instead of Vercel._. You can override this functionality by setting `forceUseVercelPostgres: true` if desired.
-
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+4. `pnpm install && pnpm dev` to install dependencies and start the dev server
+5. open `http://localhost:3000` to open the app in your browser
 
 That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
 
@@ -81,7 +80,7 @@ If you prefer to use Docker for local development instead of a local Postgres in
 
 To do so, follow these steps:
 
-- Modify the `POSTGRES_URL` in your `.env` file to `postgres://postgres@localhost:54320/<dbname>`
+- Modify the `DATABASE_URL` in your `.env.local` file to `postgres://postgres@localhost:54320/<dbname>`
 - Modify the `docker-compose.yml` file's `POSTGRES_DB` to match the above `<dbname>`
 - Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
 
@@ -219,33 +218,41 @@ To spin up this example locally, follow the [Quick Start](#quick-start). Then [S
 
 Postgres and other SQL-based databases follow a strict schema for managing your data. In comparison to our MongoDB adapter, this means that there's a few extra steps to working with Postgres.
 
-Note that often times when making big schema changes you can run the risk of losing data if you're not manually migrating it.
+Payload schema push is disabled in this repository. Committed migrations are the only supported way to change a database schema.
 
 #### Local development
 
-Ideally we recommend running a local copy of your database so that schema updates are as fast as possible. By default the Postgres adapter has `push: true` for development environments. This will let you add, modify and remove fields and collections without needing to run any data migrations.
+Use a dedicated Neon `dev` branch in `.env.local`, created from the baselined Production branch. Do not run `pnpm dev` or `pnpm payload migrate` against a Production-scope connection string.
 
-If your database is pointed to production you will want to set `push: false` otherwise you will risk losing data or having your migrations out of sync.
+If you edit Payload config before creating and applying its migration, the resulting schema-mismatch error means a migration is required; it is not an application bug.
 
 #### Migrations
 
-[Migrations](https://payloadcms.com/docs/database/migrations) are essentially SQL code versions that keeps track of your schema. When deploy with Postgres you will need to make sure you create and then run your migrations.
+[Migrations](https://payloadcms.com/docs/database/migrations) are versioned SQL changes. Review every generated migration, especially rename-versus-drop decisions. Use additive, backfill, and cleanup migrations for destructive or incompatible changes.
 
-Locally create a migration
-
-```bash
-pnpm payload migrate:create
-```
-
-This creates the migration files you will need to push alongside with your new configuration.
-
-On the server after building and before running `pnpm start` you will want to run your migrations
+For every schema change:
 
 ```bash
+pnpm payload migrate:create <descriptive-name>
 pnpm payload migrate
+pnpm payload migrate:status
 ```
 
-This command will check for any migrations that have not yet been run and try to run them and it will keep a record of migrations that have been run in the database.
+Commit the generated migration with the configuration change.
+
+#### Vercel-managed Neon
+
+In Vercel Storage, connect the Neon database to the Development, Preview, and Production environments. Under Deployments Configuration, enable **Neon: Create database branch for deployment** for Preview only, leave Production unchecked, and enable **Resource must be active before deployment**. Preview deployments then test migrations on disposable Neon branches, while Production migrations run on the real Production branch.
+
+This repository keeps the Vercel build command as `pnpm run ci`:
+
+```bash
+pnpm run ci
+```
+
+The migration command prefers `DATABASE_URL_UNPOOLED`, then `POSTGRES_URL_NON_POOLING`, and finally `DATABASE_URL`. Verify which direct-connection variable Vercel injects with `vercel env ls` or in the Storage dashboard. Only the migration process uses the direct connection; the build retains its normal pooled connection.
+
+Fix schema issues forward. `migrate:down` is not part of the deployment workflow. For a previously push-managed database, follow [the Vercel/Neon migration runbook](./PAYLOAD_MIGRATION_RESEARCH.md) before deploying.
 
 ### Docker
 
