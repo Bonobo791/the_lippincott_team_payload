@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 
 import { cn } from '@/utilities/ui'
-import { GeistMono } from 'geist/font/mono'
-import { GeistSans } from 'geist/font/sans'
+import { Mulish, Poppins } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -16,15 +15,30 @@ import { draftMode } from 'next/headers'
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-poppins',
+})
+
+const mulish = Mulish({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-mulish',
+})
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
 
   return (
-    <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
+    <html className={cn(poppins.variable, mulish.variable)} lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
-        <link href="/favicon.ico" rel="icon" sizes="32x32" />
-        <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        <link
+          href="https://cdn-ilelngl.nitrocdn.com/RwxNQMTiEyvpmazxmcwXDBfuqdZYPPcV/assets/images/optimized/rev-4eb8c4c/lippincottteam.com/wp-content/uploads/2026/03/cropped-8f58bf3ee98690a8929d78b01dd18f74.webp"
+          rel="icon"
+          type="image/webp"
+        />
       </head>
       <body>
         <Providers>
@@ -45,9 +59,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  title: {
+    default: 'Award Winning Northwest Houston Realtors | The Lippincott Team',
+    template: '%s | The Lippincott Team',
+  },
+  description:
+    'The Lippincott Team is an award-winning real estate agency serving Cypress, Tomball, Katy, Bridgeland and greater Northwest Houston. 9x Houston Business Journal Residential Real Estate Award winners.',
   openGraph: mergeOpenGraph(),
   twitter: {
     card: 'summary_large_image',
-    creator: '@payloadcms',
   },
 }
