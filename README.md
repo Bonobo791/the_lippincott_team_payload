@@ -66,7 +66,7 @@ After you click the `Deploy` button above, you'll want to have standalone copy o
 ### Development
 
 1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env.local` to create your untracked local configuration. Create a dedicated Neon `dev` branch from the baselined Production branch and set its connection string as `DATABASE_URL` in `.env.local`. Never use a Production- or Preview-scope connection string locally.
+2. `cd my-project && cp .env.example .env.local` to create your untracked local configuration. Set `DATABASE_URL` only from the appropriate Vercel-provided non-Production environment; do not create or manage Neon branches locally.
 3. Set `BLOB_READ_WRITE_TOKEN` in `.env.local` to the Development value from Vercel Blob for local media uploads. The adapter uses `DATABASE_URL` first and falls back to Vercel's injected `POSTGRES_URL`; when both are set, `DATABASE_URL` wins.
 
 4. `pnpm install && pnpm dev` to install dependencies and start the dev server
@@ -212,7 +212,7 @@ Payload schema push is disabled in this repository. Committed migrations are the
 
 #### Local development
 
-Use a dedicated Neon `dev` branch in `.env.local`, created from the baselined Production branch. Do not run `pnpm dev` or `pnpm payload migrate` against a Production-scope connection string.
+Do not run `pnpm dev` or `pnpm payload migrate` against a Production-scope connection string. Vercel creates and manages Preview Neon branches for Preview deployments.
 
 If you edit Payload config before creating and applying its migration, the resulting schema-mismatch error means a migration is required; it is not an application bug.
 
