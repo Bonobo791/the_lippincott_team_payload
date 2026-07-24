@@ -7,7 +7,7 @@
   "scripts": {
     "build": "next build --webpack",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
-    "ci": "DATABASE_URL=\"${DATABASE_URL_UNPOOLED:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}\" pnpm payload migrate && pnpm build",
+    "ci": "DATABASE_URL=\"${DATABASE_URL_UNPOOLED:-${POSTGRES_URL_NON_POOLING:-$DATABASE_URL}}\" pnpm payload migrate && pnpm payload generate:types && pnpm build",
     "dev": "next dev --webpack",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

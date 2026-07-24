@@ -44,7 +44,19 @@
   --breakpoint-xl: 80rem;
   --breakpoint-2xl: 86rem;
   --font-mono: var(--font-geist-mono);
-  --font-sans: var(--font-geist-sans);
+
+  /* Lippincott brand tokens */
+  --color-brand: #c8102e;
+  --color-brand-dark: #a50d26;
+  --color-brand-light: #fbeaed;
+  --color-ink: #141414;
+  --color-ink-soft: #4b5563;
+  --color-ink-faint: #9ca3af;
+  --color-navy: #171c2b;
+  --font-display: var(--font-poppins), sans-serif;
+  --font-body: var(--font-mulish), sans-serif;
+  --font-sans: var(--font-mulish), sans-serif;
+  --container-site: 80rem;
 }
 
 @layer utilities {
@@ -83,6 +95,24 @@
     .container {
       max-width: var(--breakpoint-2xl);
     }
+  }
+
+  /* Light diagonal zebra pattern behind header, video + CTA sections */
+  .bg-zebra {
+    background-color: #fafafa;
+    background-image: repeating-linear-gradient(
+      -55deg,
+      transparent 0 46px,
+      rgb(0 0 0 / 0.045) 46px 92px
+    );
+  }
+  /* Bold black/white zebra divider above the footer */
+  .bg-zebra-strip {
+    background-color: #000;
+    background-image: repeating-linear-gradient(-55deg, transparent 0 46px, #fff 46px 92px);
+  }
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
@@ -211,6 +241,12 @@
   }
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
   }
 }
 
