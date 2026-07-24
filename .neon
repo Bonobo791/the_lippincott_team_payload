@@ -1,7 +1,5 @@
 {
-  "_init": {
-    "features": [
-      "database"
-    ]
-  }
+  "projectId": "lively-voice-17562381",
+  "orgId": "org-falling-wind-56710775",
+  "branch": "preview/reskin"
 }

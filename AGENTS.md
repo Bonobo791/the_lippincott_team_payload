@@ -1,5 +1,5 @@
 ---
-description: 
+description:
 alwaysApply: true
 ---
 
@@ -24,6 +24,15 @@ alwaysApply: true
    post-dates most training data.
 9. **One database: Postgres (Neon).** This project uses `@payloadcms/db-postgres` only. Do not introduce
     a second adapter. Neon is managed by Vercel.
+    - The Vercel-managed Neon project (`lively-voice-17562381`) has 3 branches: `main`,
+      `preview/dev`, `preview/reskin`. All Vercel env pulls (`vercel env pull`) point at `main` only.
+    - To target another branch locally use neonctl's native flow (the repo is linked via `.neon`):
+      `neon checkout <branch>` (e.g. `neon checkout preview/reskin`) then `neon env pull`.
+      `env pull` refreshes `DATABASE_URL`/`DATABASE_URL_UNPOOLED`/`NEON_*` in `.env` in place and
+      preserves other lines. Never paste connection strings by hand — deleted/recreated branches
+      leave stale endpoints that fail with `28P01 password authentication failed`.
+    - Note: `neon env pull` does not update `POSTGRES_URL`; the Payload config prefers
+      `DATABASE_URL`, so that is fine, but anything reading `POSTGRES_URL` directly still sees `main`.
 10. **Blob** This holds all public data for Payload. It's hosted on Vercel.
 
 ## Project Structure & Module Organization
